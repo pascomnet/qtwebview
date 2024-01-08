@@ -12,6 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
 import android.webkit.CookieManager;
+import android.webkit.PermissionRequest;
 import java.lang.Runnable;
 import android.app.Activity;
 import android.content.Intent;
@@ -169,6 +170,12 @@ class QtAndroidWebViewController
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback)
         {
             callback.invoke(origin, m_hasLocationPermission, false);
+        }
+
+        // @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onPermissionRequest(final PermissionRequest request) {
+                request.grant(request.getResources());
         }
     }
 
