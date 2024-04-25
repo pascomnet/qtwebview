@@ -34,6 +34,23 @@
 typedef NSView UIView;
 #endif
 
+@interface QtWKWebViewUIDelegate : NSObject <WKUIDelegate>
+
+@end
+
+@implementation QtWKWebViewUIDelegate
+
+- (void) webView:(WKWebView *)webView
+     requestMediaCapturePermissionForOrigin:(WKSecurityOrigin *)origin
+     initiatedByFrame:(WKFrameInfo *)frame type:(WKMediaCaptureType)type
+     decisionHandler:(void (^)(WKPermissionDecision decision))decisionHandler
+     API_AVAILABLE(ios(15.0))
+{
+    decisionHandler(WKPermissionDecisionGrant);
+}
+
+@end 
+
 @interface QtWKWebViewDelegate : NSObject<WKNavigationDelegate> {
     QPointer<QDarwinWebViewPrivate> qDarwinWebViewPrivate;
 }
@@ -330,6 +347,7 @@ QDarwinWebViewPrivate::QDarwinWebViewPrivate(QWebView *view) : QWebViewPrivate(v
     CGRect frame = CGRectMake(0.0, 0.0, 400, 400);
     wkWebView = [[WKWebView alloc] initWithFrame:frame configuration:config];
     wkWebView.navigationDelegate = [[QtWKWebViewDelegate alloc] initWithQWebViewPrivate:this];
+    wkWebView.UIDelegate = [[QtWKWebViewUIDelegate alloc] init];
     [wkWebView addObserver:wkWebView.navigationDelegate forKeyPath:@"estimatedProgress"
                    options:NSKeyValueObservingOptions(NSKeyValueObservingOptionNew)
                    context:nil];
