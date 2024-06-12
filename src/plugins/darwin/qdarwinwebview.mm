@@ -334,7 +334,13 @@ QDarwinWebViewPrivate::QDarwinWebViewPrivate(QObject *p)
 #endif
 {
     CGRect frame = CGRectMake(0.0, 0.0, 400, 400);
-    wkWebView = [[WKWebView alloc] initWithFrame:frame];
+    
+    // CL-4135 allow inline playback of media
+    WKWebViewConfiguration* conf = [[WKWebViewConfiguration alloc] init];
+    conf.allowsInlineMediaPlayback = YES;
+    conf.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
+
+    wkWebView = [[WKWebView alloc] initWithFrame:frame configuration:conf];
     wkWebView.navigationDelegate = [[QtWKWebViewDelegate alloc] initWithQAbstractWebView:this];
     wkWebView.UIDelegate = [[QtWKWebViewUIDelegate alloc] init];
     [wkWebView addObserver:wkWebView.navigationDelegate forKeyPath:@"estimatedProgress"
