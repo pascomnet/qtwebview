@@ -343,6 +343,10 @@ QDarwinWebViewPrivate::QDarwinWebViewPrivate(QWebView *view) : QWebViewPrivate(v
 {
     auto config = [[[WKWebViewConfiguration alloc] init] autorelease];
     [config setURLSchemeHandler:[[[QrcSchemeHandler alloc] init] autorelease] forURLScheme:@"qrc"];
+    
+    // CL-4135 allow inline playback of media
+    config.allowsInlineMediaPlayback = YES;
+    config.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
 
     CGRect frame = CGRectMake(0.0, 0.0, 400, 400);
     wkWebView = [[WKWebView alloc] initWithFrame:frame configuration:config];
